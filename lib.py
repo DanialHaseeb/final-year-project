@@ -1,3 +1,24 @@
+def bits(x: int) -> list[int]:
+	"""
+	Returns the bits of the given integer, in reverse order, left-padded with zeros.
+	"""
+	bitString = bin(x)[2:].zfill(3)
+	result = map(int, bitString)
+	return list(result)
+
+
+def subsets(set: list[int]) -> list[list[int]]:
+	"""
+	Returns the subsets of the given set.
+	"""
+	result: list[list[int]] = [[]]
+	for x in set:
+		result += [subset + [x] for subset in result]
+	return result
+
+
+
+
 class Vector:
 	"""
 	A vector is a mathematical object that has a magnitude and a direction.
@@ -20,7 +41,7 @@ class Vector:
 		Returns the magnitude of the vector.
 		"""
 		from numpy.linalg import norm
-		return norm(self.components)
+		return float(norm(self.components))
 
 	@property
 	def direction(self) -> "Vector":
@@ -127,7 +148,7 @@ class Vector:
 		assert (isinstance(other, Vector)), "Vectors can only be compared to other Vectors."
 		assert (self.dimensions == other.dimensions), "Vectors must have the same dimensions to be compared."
 		from numpy import isclose
-		return isclose(self.components, other.components).all()
+		return bool(isclose(self.components, other.components).all())
 
 	def __ne__(self, other: object) -> bool:
 		"""
@@ -223,6 +244,15 @@ class Matrix:
 		self.elements = array(rows)
 
 
+	def subset_is_orthogonal(self, indices: list[int]) -> bool:
+		"""
+		Returns the maximum set of orthogonal vectors in the given matrix.
+		"""
+		vectors = self.columns
+		subset = [vector.as_list for (i, vector) in enumerate(vectors) if i in indices]
+		return Matrix(subset).transpose.is_orthogonal
+
+
 	@property
 	def dimensions(self) -> tuple[int, int]:
 		"""
@@ -260,7 +290,7 @@ class Matrix:
 		Returns the Frobenius norm of the matrix.
 		"""
 		from numpy.linalg import norm
-		return norm(self.elements,  ord = "fro")
+		return float(norm(self.elements,  ord = "fro"))
 
 	@property
 	def transpose(self) -> "Matrix":
@@ -291,8 +321,8 @@ class Matrix:
 		"""
 		Returns whether the matrix is orthogonal.
 		"""
-		(_, c) = self.dimensions
 		columns = self.columns
+		c = len(columns)
 		for i in range(c):
 			for j in range(c):
 				if i == j:
@@ -300,6 +330,19 @@ class Matrix:
 				if not columns[i].is_orthogonal(columns[j]):
 					return False
 		return True
+
+	@property
+	def max_orthogonal_subset(self) -> list[int]:
+		"""
+		Returns the maximum set of orthogonal vectors in the given matrix.
+		"""
+		(_, c) = self.dimensions
+		powerset = subsets(list(range(c)))[1:]
+		max_subset: list[int] = []
+		for indices in powerset:
+			if self.subset_is_orthogonal(indices):
+				max_subset = indices
+		return max_subset
 
 	@property
 	def inverse(self) -> "Matrix":
@@ -388,7 +431,7 @@ class Matrix:
 		(r2, c2) = other.dimensions
 		assert ((r1 == r2) and (c1 == c2)), "Matrices must have the same dimensions to be compared."
 		from numpy import isclose
-		return isclose(self.elements, other.elements).all()
+		return bool(isclose(self.elements, other.elements).all())
 
 	def __ne__(self, other: object) -> bool:
 		"""
@@ -448,3 +491,13 @@ class Matrix:
 		result = Matrix()
 		result.elements = numpy.empty((m, n))
 		return result
+
+
+
+matrix = Matrix([[1,  1,  1,  1],
+								 [1, -1,  1, -1],
+								 [1,  1, -1, -1],
+								 [1, -1, -1,  1]])
+print("Columns that are orthogonal:", matrix.max_orthogonal_subset)
+
+print(matrix.subset_is_orthogonal([0, 1]))
