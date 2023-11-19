@@ -1,7 +1,7 @@
-| Lesson Plan Draft |
-| ----------------- |
 
-# Linear Algebra Review
+# Lesson Plan Draft
+
+## Linear Algebra Review
 
 - What is complete basis?
 - What is row basis?
@@ -18,22 +18,16 @@
 - State discrimination problem
 - Application in query complexity
 - Problem when applying Gram-Schimidt process to quantum states (exponential blowup)
-- Loss of precision
 
 ## What is the quantum Gram-Schmidt process?
 
 - High-level overview of the quantum Gram-Schmidt process
 - The math
-- exercises (?)
+  - exercises (?)
 - The circuit
-- exercises (?)
+  - exercises (?)
 - Solved example: Quantum Gram-Schmidt process
 
 ### Application 1: Back to State discrimination
 
 ### Application 2: Quantum Gram-Schmidt process for quantum states
-
----
-
-### Things we might want to cover
-- (LIST HERE)
