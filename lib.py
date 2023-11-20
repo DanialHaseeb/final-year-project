@@ -2,10 +2,9 @@ def bits(x: int) -> list[int]:
 	"""
 	Returns the bits of the given integer, in reverse order, left-padded with zeros.
 	"""
-	bitString = bin(x)[2:].zfill(3)
+	bitString = bin(x)[2:].zfill(4)
 	result = map(int, bitString)
 	return list(result)
-
 
 def subsets(set: list[int]) -> list[list[int]]:
 	"""
@@ -16,7 +15,23 @@ def subsets(set: list[int]) -> list[list[int]]:
 		result += [subset + [x] for subset in result]
 	return result
 
-
+def expression(positions: list[int]) -> str:
+	"""
+	Returns the equation for the given positions.
+	"""
+	sub = ["₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈"]
+	def term(variables: list[int]) -> str:
+		if len(variables) == 0:
+			return "0"
+		result = ""
+		for i in variables:
+			result += f"𝑥{sub[i]}"
+		return result
+	terms = subsets(list(range(4)))
+	result: list[str] = []
+	for (i, position) in enumerate(positions):
+		result.append(f"s{sub[i]}{term(terms[position])}")
+	return " ⊕ ".join(result)
 
 
 class Vector:
@@ -491,13 +506,3 @@ class Matrix:
 		result = Matrix()
 		result.elements = numpy.empty((m, n))
 		return result
-
-
-
-matrix = Matrix([[1,  1,  1,  1],
-								 [1, -1,  1, -1],
-								 [1,  1, -1, -1],
-								 [1, -1, -1,  1]])
-print("Columns that are orthogonal:", matrix.max_orthogonal_subset)
-
-print(matrix.subset_is_orthogonal([0, 1]))
